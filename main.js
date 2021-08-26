@@ -2,6 +2,7 @@
 const CARROT_SIZE = 80;
 const CARROT_COUNT = 5;
 const BUG_COUNT = 5;
+const GAME_DURATION_SEC = 5;
 
 const field = document.querySelector('.game__field')
 const fieldRect = field.getBoundingClientRect();
@@ -25,6 +26,7 @@ function startGame(){
     initGame();
     showStopButton()
     showTimerandScore()
+    startGameTimer()
 }
 function showStopButton(){
     const icon = gameBtn.querySelector('.fa-play');
@@ -34,6 +36,23 @@ function showStopButton(){
 function showTimerandScore(){
     gameTimer.style.visibility = 'visible';
     gameScore.style.visibility = 'visible';
+}
+function startGameTimer(){
+    let remainingTimeSec = GAME_DURATION_SEC;
+    upadteTimerText(remainingTimeSec);
+    timer = setInterval(()=>{
+        if(remainingTimeSec <= 0){
+            clearInterval(timer);
+            return;
+        }
+        upadteTimerText(--remainingTimeSec);
+    }, 1000)
+
+}
+function upadteTimerText(time){
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60
+    gameTimer.innerText = `${minutes}:${seconds}`
 
 }
 function stopGame(){
@@ -43,6 +62,7 @@ function stopGame(){
 //bug, carrot create first then add at field
 function initGame() {
     field.innerHTML = ''
+    gameScore.innerText = CARROT_COUNT
     addItem('carrot', CARROT_COUNT, 'img/carrot.png')
     addItem('bug', BUG_COUNT, 'img/bug.png')
 
