@@ -76,7 +76,7 @@ body{
     color: white;
     text-align: center;
     transform: translateY(-150%);
-    opacity: 0.5;
+    border-radius: 4%;
     }
 .pop-up__refresh{
     width: 60px;

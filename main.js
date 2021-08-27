@@ -19,26 +19,41 @@ let started = false;
 let score = 0;
 let timer = undefined;
 
+
+field.addEventListener('click', (event) =>onFieldClick(event))
 gameBtn.addEventListener('click', ()=>{
     if(started){
         stopGame();
     }else{
         startGame();
-    }started = !started;
-});
+}} );
+popUpRefresh.addEventListener('click', () => {
+    startGame();
+    hidePopUp()
+
+})
+
 function startGame(){
+    started = true;
     initGame();
     showStopButton()
     showTimerandScore()
     startGameTimer()
 }
 function stopGame(){
+    started = false;
     stopGameTimer();
     hideGameButton();
     showPopupWithText('REPLAY');
 }
+function finishGame(win) {
+    started = false;
+    hideGameButton();
+    showPopupWithText(win ? 'WIN💯' : 'LOSE🖕')
+}
+
 function showStopButton(){
-    const icon = gameBtn.querySelector('.fa-play');
+    const icon = gameBtn.querySelector('.fas');
     icon.classList.add('fa-stop');
     icon.classList.remove('fa-play');
 }
@@ -55,6 +70,7 @@ function startGameTimer(){
     timer = setInterval(()=>{
         if(remainingTimeSec <= 0){
             clearInterval(timer);
+            finishGame(CARROT_COUNT === score)
             return;
         }
         upadteTimerText(--remainingTimeSec);
@@ -72,7 +88,10 @@ function upadteTimerText(time){
 }
 function showPopupWithText(text){
     popUpText.innerHTML = text;
-    popUp.classList.remove('pop-up--hide')
+    popUp.classList.remove('pop-up--hide');
+}
+function hidePopUp(){
+    popUp.classList.add('pop-up--hide');
 
 }
 
@@ -82,9 +101,30 @@ function initGame() {
     gameScore.innerText = CARROT_COUNT
     addItem('carrot', CARROT_COUNT, 'img/carrot.png')
     addItem('bug', BUG_COUNT, 'img/bug.png')
-
-
 }
+function onFieldClick(event){
+    if(!started){
+        return;
+    }const target = event.target;
+    if(target.matches('.carrot')){
+        target.remove();
+        score++;
+        updateScoreBoard()}
+        if(score === CARROT_COUNT){
+            finishGame(true)
+        }
+        else if (target.matches('.bug')){
+            stopGameTimer();
+            finishGame(false)
+        }
+    };
+
+
+
+function updateScoreBoard(){
+    gameScore.innerText = CARROT_COUNT - score;
+}
+
 function addItem(className, count, imgPath){
     const x1 = 0;
     const y1 = 0;
